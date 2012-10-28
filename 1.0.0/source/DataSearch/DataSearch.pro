@@ -8,6 +8,24 @@ QT       += core gui\
             sql\
             webkit
 
+PLATFORM = 'linux'
+BUILDTYPE = 'debug'
+
+win32{
+    PLATFORM = 'windows'
+}
+unix{
+    PLATFORM = 'linux'
+}
+CONFIG(debug, debug|release) {
+     BUILDTYPE = 'debug'
+ } else {
+     BUILDTYPE = 'release'
+ }
+
+
+DESTDIR = $${PWD}../../BIN/$${PLATFORM}/$${BUILDTYPE}
+
 win32:RC_FILE = resources\DataSearch.rc
 
 TARGET = DataSearch
