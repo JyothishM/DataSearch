@@ -2,13 +2,10 @@
 #define CONSTANTS_H
 
 // set this setting zero for final build
-#define DEVELOPMENT_BUILD 0
+#define DEVELOPMENT_BUILD 1
 
-#ifdef Q_OS_WIN32
-    #define CONFIGFILE "../config.ini"
-#else
-    #define CONFIGFILE "../../config.ini"
-#endif
+#define CONFIGFILE "../../../config.ini"
+
 
 //config.ini file fields
 #define STR_GROUP_DRIVER "SQLdriver"
@@ -29,12 +26,15 @@
     #define STR_PRY_VOLTAGE "PrimaryVoltage"
     #define STR_SRY_VOLTAGE "SecondaryVoltage"
 
-#ifdef Q_OS_WIN32
-    #define DATASHEET_TEMPLATE_FILE "../templates/datasheet_template.html"
-    #define DATASHEET_TEMP_FILE "../temp/tempfile.html"
+#if DEVELOPMENT_BUILD
+    #define DATASHEET_TEMPLATE_PATH "../../../templates/"
+    #define DATASHEET_TEMP_PATH "../../../temp"
 #else
-    #define DATASHEET_TEMPLATE_FILE "../../templates/datasheet_template.html"
-    #define DATASHEET_TEMP_FILE "../../temp/tempfile.html"
+    #define DATASHEET_TEMPLATE_PATH "../templates"
+    #define DATASHEET_TEMP_PATH "../temp"
 #endif
+
+#define DATASHEET_TEMPLATE_FILE "datasheet_template.html"
+#define DATASHEET_TEMP_FILE "tempfile.html"
 
 #endif // CONSTANTS_H

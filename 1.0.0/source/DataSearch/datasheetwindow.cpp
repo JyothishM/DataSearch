@@ -79,7 +79,8 @@ bool DataSheetWindow::PopulateUI(QSqlRecord& record)
 }
 QString DataSheetWindow::ReadTemplate()
 {
-    QFile file(DATASHEET_TEMPLATE_FILE);
+    QFile file(QString("%0/%1").arg(DATASHEET_TEMPLATE_PATH)
+                   .arg(DATASHEET_TEMPLATE_FILE));
     QString string;
     if (file.open(QFile::ReadOnly | QFile::Text))
          string = file.readAll();
@@ -108,7 +109,8 @@ void DataSheetWindow::ReplaceValues(QSqlRecord& record,QString& string)
 }
 bool DataSheetWindow::WriteTempFile(QString& string)
 {
-    QFile tempfile(DATASHEET_TEMP_FILE);
+    QFile tempfile(QString("%0/%1").arg(DATASHEET_TEMP_PATH)
+                   .arg(DATASHEET_TEMP_FILE));
     if (tempfile.open(QFile::WriteOnly | QFile::Truncate))
     {
         QTextStream outstream(&tempfile);
@@ -122,20 +124,18 @@ QString DataSheetWindow::FindTempFileURL()
 {
     QString url;
 #ifdef Q_OS_WIN32
-
 ///////////////////////////Windows///////////////////////////////////////
-    #if DEVELOPMENT_BUILD
-        url = QString("%0../../%1").arg(QApplication::applicationDirPath())
+        url = QString("%0/%1/%2").arg(QApplication::applicationDirPath())
+                              .arg(DATASHEET_TEMP_PATH)
                               .arg(DATASHEET_TEMP_FILE);
-    #else
-        url = QString("%0../%1").arg(QApplication::applicationDirPath())
-                              .arg(DATASHEET_TEMP_FILE);
-    #endif
 /////////////////////////////////////////////////////////////////////////
 
 #else
-    url = QString("file://%0/%1").arg(QApplication::applicationDirPath())
-                          .arg(DATASHEET_TEMP_FILE);
+///////////////////////////linux///////////////////////////////////////
+        url = QString("file://%0/%1/%2").arg(QApplication::applicationDirPath())
+                              .arg(DATASHEET_TEMP_PATH)
+                              .arg(DATASHEET_TEMP_FILE);
+/////////////////////////////////////////////////////////////////////////
 #endif
 
     return url;
