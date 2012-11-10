@@ -29,9 +29,11 @@
 #if DEVELOPMENT_BUILD
     #define DATASHEET_TEMPLATE_PATH "../../../templates/"
     #define DATASHEET_TEMP_PATH "../../../temp"
+    #define LOGFOLDER_PATH "../../../log"
 #else
     #define DATASHEET_TEMPLATE_PATH "../templates"
     #define DATASHEET_TEMP_PATH "../temp"
+    #define LOGFOLDER_PATH "../log"
 #endif
 
 #define DATASHEET_TEMPLATE_FILE "datasheet_template.html"

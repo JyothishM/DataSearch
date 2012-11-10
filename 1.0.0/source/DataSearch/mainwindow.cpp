@@ -4,6 +4,8 @@
 #include "constants.h"
 #include "datasheetwindow.h"
 #include "aboutdialog.h"
+#include "logger.h"
+
 #include <QLabel>
 #include <QSettings>
 #include <QMessageBox>
@@ -11,12 +13,22 @@
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QDebug>
+#include <QDate>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    // creating logger
+    Logger* logger = new Logger(QString("%0/%1.%2").arg(LOGFOLDER_PATH)
+                                .arg(QDate::currentDate().toString("yy MM dd"))
+                                .arg("log"));
+    Logger::SetCurLogger(logger);
+    logger->SetTraceLevel((unsigned int)Logger::DEBUG);
+
+
     mStatusLabel = new QLabel(tr("Started..!"),this);
     ui->statusBar->addWidget(mStatusLabel);
 
@@ -49,6 +61,7 @@ void MainWindow::on_btnLoginLogout_clicked()
                     mStatusLabel->setText(tr("Login succes.."));
                     ui->btnLoginLogout->setText(tr("Logout"));
                     UpdateTableUI();
+                    Logger::curLog("Login succes");
                 }
                 else
                 {
@@ -56,6 +69,8 @@ void MainWindow::on_btnLoginLogout_clicked()
                                           tr("Error..!"),
                                           tr("Login Failed"));
                     mStatusLabel->setText(tr("Login failed.."));
+                    Logger::curLog(QString("Login failed , user :%0, error :%1").arg(mUserName)
+                                   .arg(mDataBase.lastError().text()),Logger::ERROR);
                 }
             }
         }
@@ -64,6 +79,7 @@ void MainWindow::on_btnLoginLogout_clicked()
             QMessageBox::critical(this,
                                   tr("Error"),
                                   tr("Initialisation failed, please check if the file '%0' is proper").arg(CONFIGFILE));
+            Logger::curLog("Login initialisation failed",Logger::ERROR);
         }
     }
     else
@@ -75,10 +91,12 @@ void MainWindow::on_btnLoginLogout_clicked()
             mStatusLabel->setText(tr("Logout succes.."));
             ui->btnLoginLogout->setText(tr("Login"));
             UpdateTableUI();
+            Logger::curLog("Logout succes");
         }
         else
         {
             mStatusLabel->setText(tr("Logout failed.."));
+            Logger::curLog("Logout failed",Logger::ERROR);
         }
     }
     SetSearchVisible(bLoginStatus);
@@ -291,6 +309,7 @@ bool MainWindow::SetSearchVisible(bool visible)
 {
     ui->groupSearch->setVisible(visible);
     ui->groupSearchResult->setVisible(visible);
+    return true;
 }
 double MainWindow::ConvToDouble(QString str,QString errName, bool *ok)
 {

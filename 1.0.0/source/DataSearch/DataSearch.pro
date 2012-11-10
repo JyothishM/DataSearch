@@ -54,3 +54,11 @@ RESOURCES += \
 
 OTHER_FILES += \
     resources/DataSearch.rc.txt
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../BIN/$${PLATFORM}/$${BUILDTYPE}/ -lUtilities
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../BIN/$${PLATFORM}/$${BUILDTYPE}/ -lUtilities
+else:symbian: LIBS += -lUtilities
+else:unix: LIBS += -L$$PWD/../BIN/$${PLATFORM}/$${BUILDTYPE}/ -lUtilities
+
+INCLUDEPATH += $$PWD/../Utilities
+DEPENDPATH += $$PWD/../Utilities

@@ -53,6 +53,7 @@ void DataSheetWindow::on_actionPrint_to_PDF_triggered()
 // private
 bool DataSheetWindow::PopulateUI(QSqlRecord& record)
 {
+    bool succes=false;
     QString strTemplate = ReadTemplate();
     if(!strTemplate.isEmpty())
     {
@@ -62,6 +63,7 @@ bool DataSheetWindow::PopulateUI(QSqlRecord& record)
             // showing in webview.
             QString templatefileURL = FindTempFileURL();
             ui->webView->setUrl(QUrl(templatefileURL));
+            succes = true;
         }
         else
         {
@@ -76,6 +78,7 @@ bool DataSheetWindow::PopulateUI(QSqlRecord& record)
                               tr("Error"),
                               tr("Empty template file..!"));
     }
+    return succes;
 }
 QString DataSheetWindow::ReadTemplate()
 {
