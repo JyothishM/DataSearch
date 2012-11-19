@@ -7,6 +7,9 @@
 #define MyAppURL "www.vismayainfotech.com"
 #define MyAppExeName "DataSearch.exe"
 
+; PATHS
+#define OUTPUT_PATH "..\..\..\DataSearch_OutDir\windows\32bit"
+
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
@@ -22,12 +25,11 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-OutputDir=G:\Jyothish\works\Qt_windows\DataSearch\DataSearch_Installer
 OutputBaseFilename=DataSearch_win64_setup
 Password=vismayainfotech
 Compression=lzma
 SolidCompression=yes
-SetupIconFile="G:\Jyothish\works\Qt_windows\DataSearch\DataSearch_OutDir\DataSearchicon.ico"
+SetupIconFile="{#OUTPUT_PATH}\\DataSearchicon.ico"
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -37,14 +39,19 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "G:\Jyothish\works\Qt_windows\DataSearch\DataSearch_OutDir\bin\DataSearch.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "G:\Jyothish\works\Qt_windows\DataSearch\DataSearch_OutDir\bin\*"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "G:\Jyothish\works\Qt_windows\DataSearch\DataSearch_OutDir\sample\*"; DestDir: "{app}\sample"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "G:\Jyothish\works\Qt_windows\DataSearch\DataSearch_OutDir\temp\*"; DestDir: "{app}\temp"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "G:\Jyothish\works\Qt_windows\DataSearch\DataSearch_OutDir\templates\*"; DestDir: "{app}\templates"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "G:\Jyothish\works\Qt_windows\DataSearch\DataSearch_OutDir\config.ini"; DestDir: "{app}"; Flags: ignoreversion
-Source: "G:\Jyothish\works\Qt_windows\DataSearch\DataSearch_OutDir\DataSearchicon.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#OUTPUT_PATH}\bin\DataSearch.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#OUTPUT_PATH}\bin\*"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#OUTPUT_PATH}\sample\*"; DestDir: "{app}\sample"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#OUTPUT_PATH}\temp\*"; DestDir: "{app}\temp"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#OUTPUT_PATH}\templates\*"; DestDir: "{app}\templates"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#OUTPUT_PATH}\config.ini"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#OUTPUT_PATH}\DataSearchicon.ico"; DestDir: "{app}"; Flags: ignoreversion
+
+Source: "..\..\..\ThirdParty\mysql-installer-community-5.5.27.2.msi"; DestDir: "{app}\ThirdParty"; Flags: ignoreversion  recursesubdirs createallsubdirs
+Source: "..\..\..\ThirdParty\mysql-connector-odbc-5.2.2-win32.msi"; DestDir: "{app}\ThirdParty"; Flags: ignoreversion  recursesubdirs createallsubdirs
+Source: "..\..\..\ThirdParty\mysql-connector-odbc-5.2.2-winx64.msi"; DestDir: "{app}\ThirdParty"; Flags: ignoreversion  recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\bin\{#MyAppExeName}";IconFilename: "{app}\DataSearchicon.ico" 
@@ -52,6 +59,16 @@ Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}";I
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\bin\{#MyAppExeName}"; Tasks: desktopicon;IconFilename: "{app}\DataSearchicon.ico" 
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\bin\{#MyAppExeName}"; Tasks: quicklaunchicon;IconFilename: "{app}\DataSearchicon.ico" 
 
+[Components]
+Name: "mysql_5_5_32bit"; Description: "Mysql DBMS"; Types: full compact custom;
+Name: "mysql_32bit_ODBC_driver"; Description: "Needed since 32 bit mysql is installed"; Types: full compact custom;
+Name: "mysql_64bit_ODBC_driver"; Description: "Needed for 64 bit machines"; Types: full compact custom;
+
+
 [Run]
+Filename: "{app}\ThirdParty\mysql-installer-community-5.5.27.2.msi"; Components : mysql_5_5_32bit; Flags: waituntilterminated  shellexec   skipifsilent
+Filename: "{app}\ThirdParty\mysql-connector-odbc-5.2.2-win32.msi"; Components : mysql_32bit_ODBC_driver; Flags: waituntilterminated  shellexec   skipifsilent
+Filename: "{app}\ThirdParty\mysql-connector-odbc-5.2.2-winx64.msi"; Components : mysql_32bit_ODBC_driver; Flags: waituntilterminated  shellexec   skipifsilent
+
 Filename: "{app}\bin\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 

@@ -23,6 +23,7 @@ public:
     ~MainWindow();
     
 private slots:
+    void on_actionConfiguration_Tool_triggered();
     void on_btnLoginLogout_clicked();
     void on_btnSearch_clicked();
     void on_btnAllRecords_clicked();

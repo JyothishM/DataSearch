@@ -14,6 +14,7 @@
 #include <QSqlError>
 #include <QDebug>
 #include <QDate>
+#include <QProcess>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -42,7 +43,10 @@ MainWindow::~MainWindow()
     delete ui;
     Logout();
 }
-
+void MainWindow::on_actionConfiguration_Tool_triggered()
+{
+    QProcess::execute("DataSearchConfig");
+}
 void MainWindow::on_btnLoginLogout_clicked()
 {
     if(!bLoginStatus)
@@ -178,6 +182,7 @@ bool MainWindow::Login(QString username, QString password)
     {
         qCritical() << tr("Login fail :")
                 << mDataBase.lastError().databaseText();
+
     }
     return succes;
 }
@@ -335,6 +340,8 @@ QString MainWindow::GetPhaseType()
 {
     return ui->combo_phase->currentText();
 }
+
+
 
 
 
