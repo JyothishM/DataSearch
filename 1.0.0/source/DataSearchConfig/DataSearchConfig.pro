@@ -29,9 +29,28 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        datasearchconfig.cpp
+        datasearchconfig.cpp \
+    csvimportdialog.cpp \
+    csvsettings.cpp \
+    datasearchconfig_common.cpp
 
 HEADERS  += datasearchconfig.h \
-    ../DataSearch/constants.h
+    ../DataSearch/constants.h \
+    csvimportdialog.h \
+    csvsettings.h \
+    datasearchconfig_common.h
 
-FORMS    += datasearchconfig.ui
+FORMS    += datasearchconfig.ui \
+    csvimportdialog.ui \
+    csvsettings.ui
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../BIN/$${PLATFORM}/$${BUILDTYPE}/ -lUtilities
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../BIN/$${PLATFORM}/$${BUILDTYPE}/ -lUtilities
+else:symbian: LIBS += -lUtilities
+else:unix: LIBS += -L$$PWD/../BIN/$${PLATFORM}/$${BUILDTYPE}/ -lUtilities
+
+INCLUDEPATH += $$PWD/../Utilities
+DEPENDPATH += $$PWD/../Utilities
+
+INCLUDEPATH += $$PWD/../DataSearch
+DEPENDPATH += $$PWD/../DataSearch

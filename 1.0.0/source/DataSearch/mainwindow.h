@@ -20,8 +20,7 @@ class MainWindow : public QMainWindow
     
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-    
+    ~MainWindow();   
 private slots:
     void on_actionConfiguration_Tool_triggered();
     void on_btnLoginLogout_clicked();
@@ -34,6 +33,7 @@ private:
     bool Login(QString username,QString password);
     bool Logout();
     void UpdateTableUI();
+    void UpdateSelectionComboBoxes();
     QString FindFilterStr();
     bool SetSearchVisible(bool visible);
     double ConvToDouble(QString str,QString errName="",bool* ok=0);

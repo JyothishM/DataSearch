@@ -8,6 +8,8 @@ namespace Ui {
     class DataSearchConfig;
 }
 
+class QSqlTableModel;
+
 class DataSearchConfig : public QDialog
 {
     Q_OBJECT
@@ -16,6 +18,7 @@ public:
     explicit DataSearchConfig(QWidget *parent = 0);
     ~DataSearchConfig();
 private slots:
+    void on_btnImportCSV_clicked();
     void on_btn_UseTable_clicked();
     void on_btn_RefeshTableList_clicked();
     void on_btn_CreateTable_clicked();

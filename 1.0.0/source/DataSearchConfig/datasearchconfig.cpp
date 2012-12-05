@@ -1,6 +1,8 @@
 #include "datasearchconfig.h"
 #include "ui_datasearchconfig.h"
-#include "../DataSearch/constants.h"
+#include "constants.h"
+#include "csvimportdialog.h"
+#include "datasearchconfig_common.h"
 #include <QSettings>
 #include <QMessageBox>
 #include <QSqlError>
@@ -9,6 +11,7 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QDebug>
+#include <QSqlTableModel>
 
 DataSearchConfig::DataSearchConfig(QWidget *parent) :
     QDialog(parent),
@@ -16,8 +19,9 @@ DataSearchConfig::DataSearchConfig(QWidget *parent) :
 {
     ui->setupUi(this);
     InitUi();
-}
 
+    DSConfigLogger->Log("DataSearchConfig started",Logger::DEBUG);
+}
 DataSearchConfig::~DataSearchConfig()
 {
     delete ui;
@@ -26,7 +30,8 @@ DataSearchConfig::~DataSearchConfig()
 void DataSearchConfig::on_btnTestConnectivity_clicked()
 {
     ReadUi();
-    TestConnectivity();
+    if(TestConnectivity())
+        on_btn_RefeshTableList_clicked();
 }
 
 void DataSearchConfig::on_btn_BrowseDsnFile_clicked()
@@ -114,6 +119,30 @@ void DataSearchConfig::on_btn_RefeshTableList_clicked()
 
     if(mDataBase.isOpen())
         mDataBase.close();
+}
+
+
+void DataSearchConfig::on_btnImportCSV_clicked()
+{
+    on_btnTestConnectivity_clicked();
+    UpdateDB();
+    if(!mDataBase.isOpen())
+        mDataBase.open();
+
+    if(mDataBase.isOpen())
+    {
+        QSqlTableModel TableModel(this,mDataBase);
+        TableModel.setTable(mTableName);
+        TableModel.setEditStrategy(QSqlTableModel::OnManualSubmit);
+        TableModel.select();
+        CSVimportDialog CSVImpDialog(&TableModel,this);
+        if(CSVImpDialog.exec())
+        {
+
+        }
+
+        mDataBase.close();
+    }
 }
 
 void DataSearchConfig::on_btn_UseTable_clicked()
@@ -377,6 +406,7 @@ bool DataSearchConfig::CreateTable()
     }
     return succes;
 }
+
 
 
 

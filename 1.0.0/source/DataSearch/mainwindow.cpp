@@ -15,6 +15,7 @@
 #include <QDebug>
 #include <QDate>
 #include <QProcess>
+#include <QSet>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -113,6 +114,7 @@ void MainWindow::on_btnSearch_clicked()
 void MainWindow::on_btnAllRecords_clicked()
 {
     mTableModel->setFilter("");
+    mTableModel->select();
 }
 void MainWindow::on_searchTableView_doubleClicked(const QModelIndex &index)
 {
@@ -211,6 +213,8 @@ void MainWindow::UpdateTableUI()
             if(!mVisibleCols.contains(mTableModel->headerData(i,Qt::Horizontal).toString()))
                  ui->searchTableView->hideColumn(i);
         }
+
+        UpdateSelectionComboBoxes();
     }
     else
     {
@@ -222,6 +226,34 @@ void MainWindow::UpdateTableUI()
         ui->searchTableView->setModel(0);
     }
 }
+
+void MainWindow::UpdateSelectionComboBoxes()
+{
+    ui->combo_type->clear();
+    ui->combo_phase->clear();
+    if(mTableModel)
+    {
+        QSet<QString> typeList;
+        QSet<QString> phaseList;
+        const int rowcount = mTableModel->rowCount();
+        for(int i=0; i<rowcount; i++)
+        {
+            QSqlRecord rec =  mTableModel->record(i);
+            //type
+            QString type = rec.value(mConditionFields.value(STR_TYPE)).toString();
+            if(!type.isEmpty())
+                typeList.insert(type);
+            // phase
+            QString phase = rec.value(mConditionFields.value(STR_PHASE)).toString();
+            if(!phase.isEmpty())
+                phaseList.insert(phase);
+        }
+
+        ui->combo_type->addItems(typeList.toList());
+        ui->combo_phase->addItems(phaseList.toList());
+    }
+}
+
 QString MainWindow::FindFilterStr()
 {
     QString filterStr;
@@ -271,7 +303,7 @@ QString MainWindow::FindFilterStr()
     }
     if(!strPhType.isEmpty())
     {
-        filterStr += QString("%0 = %1 AND ").arg(mConditionFields.value(STR_PHASE,STR_PHASE))
+        filterStr += QString("%0 = '%1' AND ").arg(mConditionFields.value(STR_PHASE,STR_PHASE))
                 .arg(strPhType);      //phase condition
     }
     if(lKva>0)
